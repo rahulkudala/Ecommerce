@@ -1,5 +1,6 @@
 package com.example.Project.AccountService.Entities;
 
+import com.example.Project.CartService.Entity.CartEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,7 +30,10 @@ public class RegisterEntity {
     private Long phoneNo;
 
     @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "registerEntity")
-    private List<CustomerAddressEntity> customerAddressEntities = new ArrayList<>();
+    private List<CustomerAddressEntity> customerAddressEntities;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+    private List<CartEntity> cartEntityList;
 
 
 }

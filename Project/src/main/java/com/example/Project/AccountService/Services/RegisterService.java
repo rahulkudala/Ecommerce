@@ -5,6 +5,7 @@ import com.example.Project.AccountService.Entities.RegisterEntity;
 import com.example.Project.AccountService.Models.CustomerAddressModel;
 import com.example.Project.AccountService.Models.RegisterModel;
 import com.example.Project.AccountService.Repositories.CustomerAddressRepository;
+import com.example.Project.AccountService.Repositories.LoginRepository;
 import com.example.Project.AccountService.Repositories.RegisterRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,16 +21,21 @@ public class RegisterService {
     @Autowired
     CustomerAddressRepository customerAddressRepository;
 
-    private List<RegisterEntity> regList = new ArrayList<RegisterEntity>();
-    private List<CustomerAddressModel> addList = new ArrayList<CustomerAddressModel>();
+    @Autowired
+    LoginRepository loginRepository;
 
+//    private List<RegisterEntity> regList = new ArrayList<RegisterEntity>();
+//    private List<CustomerAddressModel> addList = new ArrayList<CustomerAddressModel>();
+
+
+    // Adding customer details
     public String addCustomer(RegisterModel registerModel){
 
         List<CustomerAddressEntity> addresslu = new ArrayList<>();
 
         if(registerModel == null)
         {
-            return "Enter data in Body";
+            return "Enter Customer Info";
 
         }
         else if(registerRepository.findByEmail(registerModel.getEmail()) != null){
@@ -66,13 +72,14 @@ public class RegisterService {
 
                 registerEntity.setCustomerAddressEntities(addresslu);
 
-                regList.add(registerEntity);
+            //    regList.add(registerEntity);
                 registerRepository.save(registerEntity);
 
                 return "Customer Added";
         }
     }
 
+    // retrieving all details of Customers & there addresses
     public List getAll() {
 
         List<RegisterEntity> li = registerRepository.findAll();
@@ -80,18 +87,27 @@ public class RegisterService {
 
     }
 
-    public String addCustomerAddress(CustomerAddressModel customerAddressModel, String email) {
+    // Adding addresses to the Customer via email
+    public String addCustomerAddress(CustomerAddressModel customerAddressModel, String email, String password) {
 
         RegisterEntity registerEntity = registerRepository.findByEmail(email);
 
-        List<CustomerAddressEntity> address = registerEntity.getCustomerAddressEntities();
+        JasyptService jasyptService = new JasyptService();
+        if(registerEntity != null &&
+                registerEntity.getEmail().equals(email) &&
+                jasyptService.decrypt(registerEntity.getPassword()).equals(password)) {
 
-//        if(l1.isPresent())
-//        {
+            List<CustomerAddressEntity> address = registerEntity.getCustomerAddressEntities();
+
+            if (customerAddressModel == null) {
+                return "Address is null";
+            } else if (registerRepository.findByEmail(email) == null) {
+                return "Customer is not present";
+            } else if (registerEntity.getEmail().equals(email)) {
 //            RegisterEntity registerEntity = new RegisterEntity();
 //            l1.stream().forEach(x -> {
 
-              CustomerAddressEntity customerAddressEntity = new CustomerAddressEntity();
+                CustomerAddressEntity customerAddressEntity = new CustomerAddressEntity();
 
                 customerAddressEntity.setLine1(customerAddressModel.getLine1());
                 customerAddressEntity.setLine2(customerAddressModel.getLine2());
@@ -104,55 +120,97 @@ public class RegisterService {
 
                 address.add(customerAddressEntity);
 
-//                x.setCustomerAddressEntities(Arrays.asList(customerAddressEntity));
                 registerEntity.setCustomerAddressEntities(address);
 
-            //    registerRepository
-                //   .save(registerEntity);
-
-                customerAddressRepository.save(customerAddressEntity);
+                //         customerAddressRepository.save(customerAddressEntity);
                 registerRepository.save(registerEntity);
 //            });
 
-
-            /*List<CustomerAddressEntity> l2 = new ArrayList<>();
-            l2.add(customerAddressEntity);
-
-            RegisterEntity registerEntity = new RegisterEntity();
-            registerEntity.setCustomerAddressEntities(l2);
-
-            customerAddressRepository.save(customerAddressEntity);
-            registerRepository
-           .save(registerEntity);*/
-
-            return "Address is Added";
-
+                return "Address is Added";
+            }
+            else
+                return null;
         }
-//        else
-//            return "Customer is not present";
+        else
+            return "User is not Registered! / Credentials are Wrong";
 //
-//    }
+    }
 
-    public RegisterModel getCustAdress(Integer id)
+    public List getCustAddress(Integer id)
     {
-        Optional<RegisterEntity> l1 = registerRepository.findById(id);
-        if(l1.isPresent()){
 
-            return (RegisterModel) l1.stream().map(x -> getCustDetails(x)).collect(Collectors.toList());
+//        List<CustomerAddressEntity> addressEntities = customerAddressRepository.findAll();
+        Optional<RegisterEntity> registerEntities = registerRepository.findById(id);
+
+        if(registerEntities.isPresent()){
+
+            List<CustomerAddressModel> customerAddressModels = new ArrayList<>();
+            registerEntities.get().getCustomerAddressEntities().stream().forEach(x -> {
+
+                CustomerAddressModel customerAddressModel = new CustomerAddressModel();
+                customerAddressModel.setLine1(x.getLine1());
+                customerAddressModel.setLine2(x.getLine2());
+                customerAddressModel.setState(x.getState());
+                customerAddressModel.setCity(x.getCity());
+                customerAddressModel.setPostalCode(x.getPostalCode());
+                customerAddressModel.setBillingAddress(x.isBillingAddress());
+                customerAddressModel.setShippingAddress(x.isShippingAddress());
+
+                customerAddressModels.add(customerAddressModel);
+            });
+
+            return customerAddressModels;
         }
         else
             return null;
     }
 
-    private RegisterModel getCustDetails(RegisterEntity registerEntity) {
 
-        return new RegisterModel(
-                registerEntity.getId(),
-                registerEntity.getFirstName(),
-                registerEntity.getLastName(),
-                registerEntity.getEmail(),
-                registerEntity.getPassword(),
-                registerEntity.getPhoneNo());
+    public List getCustAddress(String email)
+    {
+
+//        List<CustomerAddressEntity> addressEntities = customerAddressRepository.findAll();
+        Optional<RegisterEntity> registerEntities = Optional.ofNullable(registerRepository.findByEmail(email));
+
+        if(registerEntities.isPresent()){
+
+            List<CustomerAddressModel> customerAddressModels = new ArrayList<>();
+            registerEntities.get().getCustomerAddressEntities().stream().forEach(x -> {
+
+                CustomerAddressModel customerAddressModel = new CustomerAddressModel();
+                customerAddressModel.setLine1(x.getLine1());
+                customerAddressModel.setLine2(x.getLine2());
+                customerAddressModel.setState(x.getState());
+                customerAddressModel.setCity(x.getCity());
+                customerAddressModel.setPostalCode(x.getPostalCode());
+                customerAddressModel.setBillingAddress(x.isBillingAddress());
+                customerAddressModel.setShippingAddress(x.isShippingAddress());
+
+                customerAddressModels.add(customerAddressModel);
+            });
+
+            return customerAddressModels;
+        }
+        else
+            return null;
+    }
+
+    private CustomerAddressModel getAddress(CustomerAddressEntity addressEntity) {
+
+        Optional<CustomerAddressEntity> customerAddressEntity = customerAddressRepository.findById(addressEntity.getId());
+        List<CustomerAddressModel> address = new ArrayList<>();
+
+        address.add(new CustomerAddressModel(
+                customerAddressEntity.get().getLine1(),
+                customerAddressEntity.get().getLine2(),
+                customerAddressEntity.get().getPostalCode(),
+                customerAddressEntity.get().getState(),
+                customerAddressEntity.get().getCity(),
+                customerAddressEntity.get().isShippingAddress(),
+                customerAddressEntity.get().isBillingAddress()
+        ));
+
+        return null;
     }
 
     private RegisterModel getRegistered(RegisterEntity registerEntity){
@@ -162,7 +220,7 @@ public class RegisterService {
         registerEntity.getCustomerAddressEntities().stream().forEach(x -> {
             CustomerAddressModel cm = new CustomerAddressModel();
             cm.setLine1(x.getLine1());
-            cm.setLine2(cm.getLine2());
+            cm.setLine2(x.getLine2());
             cm.setState(x.getState());
             cm.setCity(x.getCity());
             cm.setPostalCode(x.getPostalCode());
@@ -170,7 +228,6 @@ public class RegisterService {
             cm.setBillingAddress(x.isBillingAddress());
 
             address.add(cm);
-
 
         });
 
@@ -185,4 +242,27 @@ public class RegisterService {
         );
     }
 
+    public String login(String email, String password) {
+
+        RegisterEntity registerEntity = registerRepository.findByEmail(email);
+
+        if(registerEntity != null) {
+
+            JasyptService jasyptService = new JasyptService();
+            Authentication authentication = new Authentication();
+
+            if (registerEntity.getEmail().equals(email) &&
+                    jasyptService.decrypt(registerEntity.getPassword()).equals(password)) {
+
+                String token = authentication.generateToken(email);
+
+                return "Login Successful\n" + token;
+
+            }
+            else
+                return "Authentication Failed!";
+        }
+        else
+            return "Email not exit";
+    }
 }

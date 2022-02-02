@@ -23,6 +23,10 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 //	implementation 'org.jasypt:jasypt'
 	implementation 'com.github.ulisesbocchio:jasypt-spring-boot:3.0.4'
+
+	implementation 'junit:junit:4.13.1'
+	testImplementation group: 'junit', name: 'junit', version: '4.4'
+	implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.6.0'
 }
 
 test {
