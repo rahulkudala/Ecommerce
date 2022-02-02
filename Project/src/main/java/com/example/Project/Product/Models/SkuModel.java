@@ -13,7 +13,7 @@ public class SkuModel {
     private Integer skuCode;
     private Integer productCode;
     private String size;
-  //  private PriceModel priceModel;
+    private PriceModel priceModel;
 
 
 

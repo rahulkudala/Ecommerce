@@ -37,6 +37,7 @@ public class CartService {
 
             registerEntity.get().getCartEntityList().add(cartEntity);
             registerRepository.save(registerEntity.get());
+
             return "added";
         }
         else
@@ -60,7 +61,10 @@ public class CartService {
                 Double rate = priceRepository.findBySkuCode(x.getSkuCode()).getPrice();
                 Double total = rate * quantity;
                 billString.set(billString +
-                        "\nSKUCODE: " + skuCode + "\tPrice: " + rate + "\tQuantity: " + quantity + "\tSubTotal: " + total);
+                        "\nSkuCode: " + skuCode +
+                        "\nPrice: " + rate +
+                        "\nQuantity: " + quantity +
+                        "\nSubTotal: " + total +"\n");
 
                 fullTotal.updateAndGet(d -> d + fullTotal.get());
             });

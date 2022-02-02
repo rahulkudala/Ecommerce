@@ -62,8 +62,8 @@ public class ProductService {
             skuEntity.setProductEntity(productsEntity.get());
 
             productsEntity.get().getSkuEntityList().add(skuEntity);
-            skuRepository.save(skuEntity);
-          //  productRepository.save(productsEntity.get());
+            //skuRepository.save(skuEntity);
+            productRepository.save(productsEntity.get());
 
             return "Sku is added";
         }
@@ -85,10 +85,10 @@ public class ProductService {
             priceEntity.setPrice(priceModel.getPrice());
             priceEntity.setCurrency(priceModel.getCurrency());
 
-         //   skuEntity.get().setPriceEntity();
+            skuEntity.get().setPriceEntity(priceEntity);
 
-     //       skuRepository.save(skuEntity.get());
-            priceRepository.save(priceEntity);
+            skuRepository.save(skuEntity.get());
+         //   priceRepository.save(priceEntity);
 
 
             return "Price is added";
@@ -109,6 +109,7 @@ public class ProductService {
         all.add(priceEntities.stream().map(x -> getPrices(x)).collect(Collectors.toList()));
 
         return all;
+//        return productRepository.findAll();
     }
 
     // Product Entity to Model conversion
@@ -124,7 +125,7 @@ public class ProductService {
             skuModel.setProductCode(x.getProductCode());
             skuModel.setSkuCode(x.getSkuCode());
             skuModel.setSize(x.getSize());
-
+//                skuModel.setPriceModel(x.getPriceEntity().add());
             skus.add(skuModel);
 
         });
@@ -146,7 +147,5 @@ public class ProductService {
                 priceEntity.getPrice(),
                 priceEntity.getCurrency()
         );
-
     }
-
 }
