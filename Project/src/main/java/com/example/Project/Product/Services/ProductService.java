@@ -100,7 +100,7 @@ public class ProductService {
 
     public List getAllProducts(){
 
-        List<ProductEntity> productEntity = productRepository.findAll();
+        /*List<ProductEntity> productEntity = productRepository.findAll();
         List<PriceEntity> priceEntities = priceRepository.findAll();
 
         List all = new ArrayList();
@@ -108,8 +108,8 @@ public class ProductService {
         all.add(productEntity.stream().map(x -> getProducts(x)).collect(Collectors.toList()));
         all.add(priceEntities.stream().map(x -> getPrices(x)).collect(Collectors.toList()));
 
-        return all;
-//        return productRepository.findAll();
+        return all;*/
+        return productRepository.findAll();
     }
 
     // Product Entity to Model conversion

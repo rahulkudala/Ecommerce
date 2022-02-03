@@ -1,6 +1,7 @@
 package com.example.Project.Product.Entities;
 
 import com.example.Project.InventoryService.Entities.InventoryEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -27,10 +28,12 @@ public class SkuEntity {
 
     @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "Product_Sku")
+    @JsonIgnoreProperties("skuEntityList")
     private ProductEntity productEntity;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "Price_Sku")
+
     private PriceEntity priceEntity;
 
     @OneToOne(cascade=CascadeType.ALL)

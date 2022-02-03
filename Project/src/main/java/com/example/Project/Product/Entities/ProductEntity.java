@@ -1,5 +1,6 @@
 package com.example.Project.Product.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -23,6 +24,7 @@ public class ProductEntity {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "productEntity")
 //    @JoinTable(name = "Customer_Sku", joinColumns = { @JoinColumn(name = "Cust_id")}, inverseJoinColumns = {@JoinColumn(name = "Sku_id")})
+    @JsonIgnoreProperties("productEntity")
     private List<SkuEntity> skuEntityList;
 
 }
