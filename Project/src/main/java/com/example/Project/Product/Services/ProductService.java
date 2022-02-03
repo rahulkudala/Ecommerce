@@ -75,9 +75,9 @@ public class ProductService {
     // Adding Price to the Sku
     public String addPrice(PriceModel priceModel){
 
-        Optional<SkuEntity> skuEntity = Optional.ofNullable(skuRepository.findBySkuCode(priceModel.getSkuCode()));
+        SkuEntity skuEntity = skuRepository.findBySkuCode(priceModel.getSkuCode());
         Optional<ProductEntity> productsEntity = productRepository.findById(priceModel.getSkuCode());
-        if(skuEntity.isPresent()) {
+        if(skuEntity!=null) {
 
             PriceEntity priceEntity = new PriceEntity();
 
@@ -85,10 +85,11 @@ public class ProductService {
             priceEntity.setPrice(priceModel.getPrice());
             priceEntity.setCurrency(priceModel.getCurrency());
 
-            skuEntity.get().setPriceEntity(priceEntity);
+            skuEntity.setPriceEntity(priceEntity);
 
-            skuRepository.save(skuEntity.get());
+            skuRepository.save(skuEntity);
          //   priceRepository.save(priceEntity);
+
 
 
             return "Price is added";

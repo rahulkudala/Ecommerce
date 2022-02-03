@@ -29,7 +29,7 @@ public class RegisterEntity {
     @Column(name = "Phone_Number")
     private Long phoneNo;
 
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "registerEntity")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER,mappedBy = "registerEntity")
     private List<CustomerAddressEntity> customerAddressEntities;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)

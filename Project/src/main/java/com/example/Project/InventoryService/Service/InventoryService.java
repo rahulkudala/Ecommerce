@@ -29,8 +29,9 @@ public class InventoryService {
 
     public String addInventory(InventoryModel inventoryModel, Integer skuCode){
 
-        Optional<SkuEntity> skuEntity = Optional.ofNullable(skuRepository.findBySkuCode(skuCode));
-        Optional<ProductEntity> productEntity = Optional.ofNullable(productRepository.findByProductCode(inventoryModel.getSkuCode()));
+        Optional<SkuEntity> skuEntity = Optional.ofNullable(skuRepository.findBySkuCode(inventoryModel.getSkuCode()));
+
+        //Optional<ProductEntity> productEntity = Optional.ofNullable(productRepository.findByProductCode(inventoryModel.getSkuCode()));
 
         if(skuEntity.isPresent()){
 
