@@ -1,5 +1,6 @@
 package com.example.Project.AccountService.Services;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwt;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -7,6 +8,7 @@ import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2Res
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
+import java.util.Calendar;
 import java.util.Date;
 
 @Service
@@ -26,12 +28,31 @@ public class Authentication {
 
     }
 
-    public boolean validateToken(String token){
+    public boolean validateToken(String token) throws ExpiredJwtException {
 
-        boolean value = false;
+        boolean value = true;
+        try {
+            Date expiredDate = Jwts.parser().setSigningKey(key)
+                    .parseClaimsJws(token).getBody().getExpiration();
 
+            Date todayDate = Calendar.getInstance().getTime();
 
-        return value;
+            value = true;
+        }
+        catch (Exception ee){
+
+            value = false;
+            throw ee;
+        }
+        finally {
+            return value;
+        }
+    }
+
+    public String getEmailFromToken(String token){
+
+        String email = Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
+        return email;
     }
 
 

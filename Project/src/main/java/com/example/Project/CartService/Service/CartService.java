@@ -5,10 +5,12 @@ import com.example.Project.AccountService.Entities.RegisterEntity;
 import com.example.Project.AccountService.Repositories.RegisterRepository;
 import com.example.Project.CartService.Entity.CartEntity;
 import com.example.Project.CartService.Model.CartModel;
+import com.example.Project.InventoryService.Repository.InventoryRepository;
 import com.example.Project.Product.Repository.PriceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -24,24 +26,36 @@ public class CartService {
     @Autowired
     PriceRepository priceRepository;
 
+    @Autowired
+    InventoryRepository inventoryRepository;
+
     public String addToCart(CartModel cartModel, String email) {
 
         Optional<RegisterEntity> registerEntity = Optional.ofNullable(registerRepository.findByEmail(email));
 
+        Integer quantityNeed = cartModel.getQuantity();
+        Integer quantityPresent = inventoryRepository.findBySkuCode(cartModel.getSkuCode()).getQuantityAvailable();
+
         if(registerEntity.isPresent()) {
-            CartEntity cartEntity = new CartEntity();
 
-            cartEntity.setCustomerEmail(email);
+            if(quantityPresent - quantityNeed >= 0) {
+                CartEntity cartEntity = new CartEntity();
 
-            String orderID = UUID.randomUUID().toString();
-            cartEntity.setOrderCode(orderID);
-            cartEntity.setSkuCode(cartModel.getSkuCode());
-            cartEntity.setQuantity(cartModel.getQuantity());
+                cartEntity.setCustomerEmail(email);
 
-            registerEntity.get().getCartEntityList().add(cartEntity);
-            registerRepository.save(registerEntity.get());
+                String orderID = UUID.randomUUID().toString();
 
-            return "added";
+                cartEntity.setOrderCode(orderID);
+                cartEntity.setSkuCode(cartModel.getSkuCode());
+                cartEntity.setQuantity(cartModel.getQuantity());
+
+                registerEntity.get().getCartEntityList().add(cartEntity);
+                registerRepository.save(registerEntity.get());
+
+                return "Added to Cart";
+            }
+            else
+                return "Available Quantity is : " + quantityPresent;
         }
         else
             return "Customer Not Found";
