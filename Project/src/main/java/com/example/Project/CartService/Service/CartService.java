@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Service
@@ -30,8 +31,10 @@ public class CartService {
         if(registerEntity.isPresent()) {
             CartEntity cartEntity = new CartEntity();
 
-            cartEntity.setCustomerEmail(cartModel.getCustomerEmail());
-            cartEntity.setOrderCode(cartModel.getOrderCode());
+            cartEntity.setCustomerEmail(email);
+
+            String orderID = UUID.randomUUID().toString();
+            cartEntity.setOrderCode(orderID);
             cartEntity.setSkuCode(cartModel.getSkuCode());
             cartEntity.setQuantity(cartModel.getQuantity());
 
@@ -46,14 +49,13 @@ public class CartService {
 
     public String viewCart(String email) {
 
-
         AtomicReference<String> billString = new AtomicReference<>("");
 
         AtomicReference<Double> fullTotal = new AtomicReference<>(0.0);
 
         List<CartEntity> cartEntity  = registerRepository.findByEmail(email).getCartEntityList();
 
-        if((cartEntity.isEmpty())) {
+        if(!(cartEntity.isEmpty())) {
             cartEntity.stream().forEach(x -> {
 
                 Integer skuCode = x.getSkuCode();
@@ -71,6 +73,6 @@ public class CartService {
             billString.set(billString + "\nTotal : " + fullTotal);
             return billString.toString();
         }
-        return "Error 2022";
+        return "Error - User did not added anything to Cart";
     }
 }

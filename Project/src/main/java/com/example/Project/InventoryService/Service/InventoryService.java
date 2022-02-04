@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,63 +28,60 @@ public class InventoryService {
     InventoryRepository inventoryRepository;
 
 
-    public String addInventory(InventoryModel inventoryModel, Integer skuCode){
+    public String  addInventory(InventoryModel inventoryModel){
 
         Optional<SkuEntity> skuEntity = Optional.ofNullable(skuRepository.findBySkuCode(inventoryModel.getSkuCode()));
 
-        //Optional<ProductEntity> productEntity = Optional.ofNullable(productRepository.findByProductCode(inventoryModel.getSkuCode()));
+//        Optional<ProductEntity> productEntity = Optional.ofNullable(productRepository.findByProductCode(inventoryModel.getSkuCode()));
 
+        InventoryEntity inventoryEntity = new InventoryEntity();
         if(skuEntity.isPresent()){
-
-            InventoryEntity inventoryEntity = new InventoryEntity();
 
             inventoryEntity.setSkuCode(inventoryModel.getSkuCode());
             inventoryEntity.setQuantityAvailable(inventoryModel.getQuantityAvailable());
 
             skuEntity.get().setInventoryEntity(inventoryEntity);
             skuRepository.save(skuEntity.get());
+            inventoryRepository.save(inventoryEntity);
 
         //    skuRepository.save(productEntity.get().getSkuEntityList());
 
-            inventoryRepository.save(inventoryEntity);
+
 
             return "Inventory Updated";
         }
         else {
-            /*InventoryEntity inventoryEntity = new InventoryEntity();
 
-            inventoryEntity.setSkuCode(skuCode);
+
+            inventoryEntity.setSkuCode(inventoryModel.getSkuCode());
             inventoryEntity.setQuantityAvailable(inventoryModel.getQuantityAvailable());
 
-           // skuRepository.save(skuEntity.get());
+            inventoryRepository.save(inventoryEntity);
 
-            inventoryRepository.save(inventoryEntity);*/
-
-
-//            return "Not added to Inventory";
-            return "Product not Found !!!!";
+            return "Product not Found !!!!\n Inventory added!";
         }
     }
 
-    public String updateInventory(){
+    public String updateInventory(InventoryModel inventoryModel, Integer skuCode){
 
-        return null;
+        InventoryEntity inventoryEntities = inventoryRepository.findBySkuCode(skuCode);
+
+        if(!(inventoryEntities.equals(null))){
+
+            inventoryEntities.setQuantityAvailable(inventoryModel.getQuantityAvailable() + inventoryEntities.getQuantityAvailable());
+            inventoryRepository.save(inventoryEntities);
+
+            return " Product sku updated";
+        }
+        else
+            return "No Product found!";
+
     }
 
     public List getInventories() {
 
-        List inventories = skuRepository.findAll().stream().map(i -> i.getInventoryEntity()).collect(Collectors.toList());
-                //inventoryRepository.findAll();
-
-        /*List<InventoryModel> list = new ArrayList<>();
-
-        inventoryEntities.stream().forEach(x -> list.add(new InventoryModel(x.getSkuCode(),x.getQuantityAvailable())));*/
-
-        return inventories;
-    }
-
-    public List getTest(){
-
         return inventoryRepository.findAll();
     }
+
+
 }

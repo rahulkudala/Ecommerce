@@ -88,9 +88,7 @@ public class ProductService {
             skuEntity.setPriceEntity(priceEntity);
 
             skuRepository.save(skuEntity);
-         //   priceRepository.save(priceEntity);
-
-
+            priceRepository.save(priceEntity);
 
             return "Price is added";
 

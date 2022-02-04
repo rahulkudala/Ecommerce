@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 public class CartModel {
 
     private String customerEmail;
-    private Integer orderCode;
+    private String orderCode;
     private Integer skuCode;
     private Integer quantity;
 

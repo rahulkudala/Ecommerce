@@ -13,9 +13,9 @@ public class InventoryController {
     @Autowired
     InventoryService inventoryService;
 
-    @PostMapping("/add-inventory/{skucode}")
-    public String inventoryAdding(@RequestBody InventoryModel inventoryModel, @PathVariable Integer skucode){
-        return inventoryService.addInventory(inventoryModel,skucode);
+    @PostMapping("/add-inventory")
+    public String inventoryAdding(@RequestBody InventoryModel inventoryModel){
+        return inventoryService.addInventory(inventoryModel);
     }
 
     @GetMapping("/get-inventory")
@@ -24,10 +24,16 @@ public class InventoryController {
         return inventoryService.getInventories();
     }
 
-    @GetMapping("/getTest")
+    @PutMapping("/update-inventory/{skuCode}")
+    public String updatingInventory(@RequestBody InventoryModel inventoryModel, @PathVariable Integer skuCode){
+
+        return inventoryService.updateInventory(inventoryModel,skuCode);
+    }
+
+    /*@GetMapping("/getTest")
     public List<InventoryModel> testGet(){
 
         return inventoryService.getTest();
-    }
+    }*/
 
 }

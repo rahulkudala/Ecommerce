@@ -50,6 +50,7 @@ public class RegisterService {
                 registerEntity.setEmail(registerModel.getEmail());
                 registerEntity.setPhoneNo(registerModel.getPhoneNo());
                 registerEntity.setPassword(jasyptService.encrypt(registerModel.getPassword()));
+                registerEntity.setCartEntityList(null);
 
                 // adding address
                /* registerModel.getCustomerAddress().forEach(a -> {
