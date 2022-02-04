@@ -10,7 +10,6 @@ import com.example.Project.Product.Repository.PriceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -82,8 +81,9 @@ public class CartService {
                         "\nQuantity: " + quantity +
                         "\nSubTotal: " + total +"\n");
 
-                fullTotal.updateAndGet(d -> d + fullTotal.get());
+                fullTotal.updateAndGet(d -> d + total);
             });
+
             billString.set(billString + "\nTotal : " + fullTotal);
             return billString.toString();
         }
