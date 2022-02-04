@@ -3,18 +3,14 @@ package com.example.Project.InventoryService.Service;
 import com.example.Project.InventoryService.Entities.InventoryEntity;
 import com.example.Project.InventoryService.Repository.InventoryRepository;
 import com.example.Project.InventoryService.Models.InventoryModel;
-import com.example.Project.Product.Entities.ProductEntity;
 import com.example.Project.Product.Entities.SkuEntity;
 import com.example.Project.Product.Repository.ProductRepository;
 import com.example.Project.Product.Repository.SkuRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class InventoryService {
@@ -76,6 +72,24 @@ public class InventoryService {
         else
             return "No Product found!";
 
+    }
+
+    public String reduceInventory(InventoryModel inventoryModel){
+
+        Integer quantityPresent = inventoryRepository.findBySkuCode(inventoryModel.getSkuCode()).getQuantityAvailable();
+        InventoryEntity inventoryEntity = inventoryRepository.findBySkuCode(inventoryModel.getSkuCode());
+        SkuEntity skuEntity = skuRepository.findBySkuCode(inventoryModel.getSkuCode());
+
+
+        inventoryEntity.setSkuCode(inventoryModel.getSkuCode());
+        inventoryEntity.setQuantityAvailable(quantityPresent - inventoryModel.getQuantityAvailable());
+
+        skuEntity.setInventoryEntity(inventoryEntity);
+
+        skuRepository.save(skuEntity);
+
+
+        return "Inventory reduced";
     }
 
     public List getInventories() {

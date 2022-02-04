@@ -1,11 +1,11 @@
 package com.example.Project.Product.Services;
 
+import com.example.Project.Product.Models.PriceModel;
+import com.example.Project.Product.Models.SkuModel;
 import com.example.Project.Product.Entities.PriceEntity;
 import com.example.Project.Product.Entities.ProductEntity;
 import com.example.Project.Product.Entities.SkuEntity;
-import com.example.Project.Product.Models.PriceModel;
 import com.example.Project.Product.Models.ProductModel;
-import com.example.Project.Product.Models.SkuModel;
 import com.example.Project.Product.Repository.PriceRepository;
 import com.example.Project.Product.Repository.ProductRepository;
 import com.example.Project.Product.Repository.SkuRepository;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ProductService {

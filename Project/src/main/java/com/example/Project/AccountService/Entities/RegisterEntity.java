@@ -1,6 +1,7 @@
 package com.example.Project.AccountService.Entities;
 
 import com.example.Project.CartService.Entity.CartEntity;
+import com.example.Project.OrderService.Entity.OrderEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,9 @@ public class RegisterEntity {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
     private List<CartEntity> cartEntityList;
+
+    @OneToMany
+    private List<OrderEntity> orderEntityList;
 
 
 }

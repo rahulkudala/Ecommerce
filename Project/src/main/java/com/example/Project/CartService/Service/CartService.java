@@ -1,6 +1,5 @@
 package com.example.Project.CartService.Service;
 
-
 import com.example.Project.AccountService.Entities.RegisterEntity;
 import com.example.Project.AccountService.Repositories.RegisterRepository;
 import com.example.Project.CartService.Entity.CartEntity;
@@ -17,7 +16,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class CartService {
-
 
     @Autowired
     RegisterRepository registerRepository;
